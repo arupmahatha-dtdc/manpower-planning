@@ -1,0 +1,256 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 4200px;
+                 height: 2400px;
+                 background-color: #f4f6fa;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_cd_unit", "label": "manpower in units cd\nunit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 600, "y": 2657}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#e74c3c", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_with_sorter", "label": "manpower with sorter", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1500, "y": 2571}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "cd_unit", "label": "cd unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 750, "y": 2742}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#27ae60", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "per_day_bag_doc", "label": "per day bag doc", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1000, "y": 2828}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "bag_doc", "label": "bag doc", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1000, "y": 2914}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "in_docs", "label": "in docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1500, "y": 3000}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_docs", "label": "out docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 300, "y": 2485}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#27ae60", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "per_day_bag_non_doc", "label": "per day bag non doc", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 600, "y": 2400}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "vol_bag_non_doc", "label": "vol bag non doc", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 900, "y": 2314}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "in_ndx_out_vol", "label": "in ndx out vol", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1200, "y": 2228}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_ndx_out_vol", "label": "out ndx out vol", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1500, "y": 2142}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "wt_bag_non_doc", "label": "wt bag non doc", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1800, "y": 2057}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "in_ndx_vol_wt", "label": "in ndx vol wt", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2100, "y": 1971}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_ndx_vol_wt", "label": "out ndx vol wt", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2400, "y": 1885}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "at", "label": "at", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2700, "y": 1800}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_with_sorter_sorter_unit", "label": "manpower in units with\nsorter sorter unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 3000, "y": 1714}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "with_sorter_sorter_unit", "label": "with sorter sorter\nunit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 3300, "y": 1628}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#27ae60", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "per_day_ndx", "label": "per day ndx", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 3600, "y": 1542}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_per_day_non_docs", "label": "out per day non docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 3900, "y": 1457}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_non_docs", "label": "out non docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 4200, "y": 1371}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "in_per_day_non_docs", "label": "in per day non docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 4500, "y": 1285}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "in_non_docs", "label": "in non docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 4800, "y": 1200}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_with_sorter_non_cony", "label": "manpower in units with\nsorter non cony", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 5100, "y": 1114}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "with_sorter_non_cony", "label": "with sorter non cony", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 5400, "y": 1028}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_with_no_sorter_manual_sorting_units", "label": "manpower in units with\nno sorter manual\nsorting units", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 5700, "y": 942}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manual_sorting_units", "label": "manual sorting units", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 6000, "y": 857}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_skidder_unit", "label": "manpower in units\nskidder unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 750, "y": 2571}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "skidder_unit", "label": "skidder unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2400, "y": 2657}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "xray_unit", "label": "xray unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 6300, "y": 771}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#27ae60", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "per_day_air", "label": "per day air", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 6600, "y": 685}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_per_day_air", "label": "out per day air", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 6900, "y": 600}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#2980b9", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_air", "label": "out air", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 7200, "y": 514}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "air_unit", "label": "air unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 7500, "y": 428}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "surface_unit", "label": "surface unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2250, "y": 2742}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "doc_unit", "label": "doc unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1500, "y": 2742}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#27ae60", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "per_day_dox", "label": "per day dox", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2000, "y": 2828}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "out_per_day_docs", "label": "out per day docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 7800, "y": 342}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8e44ad", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "in_per_day_docs", "label": "in per day docs", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2000, "y": 2914}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#8d5524", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "exception_han_unit", "label": "exception han unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 8100, "y": 257}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_xray_unit", "label": "manpower in units xray\nunit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 8400, "y": 171}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_air_unit", "label": "manpower in units air\nunit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 8700, "y": 85}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_surface_unit", "label": "manpower in units\nsurface unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1800, "y": 2657}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_doc_unit", "label": "manpower in units doc\nunit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 1200, "y": 2657}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#f39c12", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_in_units_exception_han_unit", "label": "manpower in units\nexception han unit", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 9000, "y": 0}, {"borderWidth": 12, "borderWidthSelected": 24, "color": "#e74c3c", "font": {"color": "black"}, "heightConstraint": {"maximum": 400, "minimum": 120}, "id": "manpower_without_sorter", "label": "manpower without\nsorter", "physics": false, "shadow": true, "shape": "box", "widthConstraint": {"maximum": 800, "minimum": 400}, "x": 2250, "y": 2571}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_cd_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_cd_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "cd_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_cd_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "cd_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_bag_doc", "selectionWidth": 22, "smooth": false, "to": "cd_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_bag_doc", "selectionWidth": 22, "smooth": false, "to": "surface_unit", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "bag_doc", "selectionWidth": 22, "smooth": false, "to": "per_day_bag_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "in_docs", "selectionWidth": 22, "smooth": false, "to": "bag_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "in_docs", "selectionWidth": 22, "smooth": false, "to": "in_per_day_docs", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "out_docs", "selectionWidth": 22, "smooth": false, "to": "bag_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "out_docs", "selectionWidth": 22, "smooth": false, "to": "out_per_day_docs", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_bag_non_doc", "selectionWidth": 22, "smooth": false, "to": "cd_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_bag_non_doc", "selectionWidth": 22, "smooth": false, "to": "surface_unit", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "vol_bag_non_doc", "selectionWidth": 22, "smooth": false, "to": "per_day_bag_non_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "in_ndx_out_vol", "selectionWidth": 22, "smooth": false, "to": "vol_bag_non_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "out_ndx_out_vol", "selectionWidth": 22, "smooth": false, "to": "vol_bag_non_doc", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "wt_bag_non_doc", "selectionWidth": 22, "smooth": false, "to": "per_day_bag_non_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "in_ndx_vol_wt", "selectionWidth": 22, "smooth": false, "to": "wt_bag_non_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "out_ndx_vol_wt", "selectionWidth": 22, "smooth": false, "to": "wt_bag_non_doc", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_cd_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_with_sorter_sorter_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_with_sorter_non_cony", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_with_no_sorter_manual_sorting_units", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_skidder_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_xray_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_air_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_surface_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_doc_unit", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "at", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_exception_han_unit", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_with_sorter_sorter_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_with_sorter_sorter_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "with_sorter_sorter_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_with_sorter_sorter_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "with_sorter_sorter_unit", "selectionWidth": 22, "smooth": false, "to": "with_sorter_non_cony", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "with_sorter_sorter_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_ndx", "selectionWidth": 22, "smooth": false, "to": "with_sorter_sorter_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_ndx", "selectionWidth": 22, "smooth": false, "to": "manual_sorting_units", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_ndx", "selectionWidth": 22, "smooth": false, "to": "exception_han_unit", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "out_per_day_non_docs", "selectionWidth": 22, "smooth": false, "to": "per_day_ndx", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "out_non_docs", "selectionWidth": 22, "smooth": false, "to": "out_per_day_non_docs", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "in_per_day_non_docs", "selectionWidth": 22, "smooth": false, "to": "per_day_ndx", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "in_non_docs", "selectionWidth": 22, "smooth": false, "to": "in_per_day_non_docs", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_with_sorter_non_cony", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_with_sorter_non_cony", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "with_sorter_non_cony", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_with_sorter_non_cony", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "with_sorter_non_cony", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_with_no_sorter_manual_sorting_units", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_with_no_sorter_manual_sorting_units", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "manual_sorting_units", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_with_no_sorter_manual_sorting_units", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "manual_sorting_units", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_skidder_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_skidder_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "skidder_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_skidder_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "xray_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "xray_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_xray_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_air", "selectionWidth": 22, "smooth": false, "to": "xray_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_air", "selectionWidth": 22, "smooth": false, "to": "air_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_air", "selectionWidth": 22, "smooth": false, "to": "surface_unit", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "out_per_day_air", "selectionWidth": 22, "smooth": false, "to": "per_day_air", "width": 5}, {"arrows": "to", "color": "#2980b9", "from": "out_air", "selectionWidth": 22, "smooth": false, "to": "out_per_day_air", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "air_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "air_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_air_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "surface_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "surface_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_surface_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "doc_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "doc_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_doc_unit", "width": 5}, {"arrows": "to", "color": "#27ae60", "from": "per_day_dox", "selectionWidth": 22, "smooth": false, "to": "doc_unit", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "out_per_day_docs", "selectionWidth": 22, "smooth": false, "to": "per_day_dox", "width": 5}, {"arrows": "to", "color": "#8e44ad", "from": "in_per_day_docs", "selectionWidth": 22, "smooth": false, "to": "per_day_dox", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "exception_han_unit", "selectionWidth": 22, "smooth": false, "to": "skidder_unit", "width": 5}, {"arrows": "to", "color": "#8d5524", "from": "exception_han_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_in_units_exception_han_unit", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_xray_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_xray_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_air_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_air_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_surface_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_surface_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_doc_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_doc_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_exception_han_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_with_sorter", "width": 5}, {"arrows": "to", "color": "#f39c12", "from": "manpower_in_units_exception_han_unit", "selectionWidth": 22, "smooth": false, "to": "manpower_without_sorter", "width": 5}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"layout": {"hierarchical": {"enabled": true, "levelSeparation": 950, "nodeSpacing": 1800, "treeSpacing": 2500, "direction": "DU", "sortMethod": "directed", "shakeTowards": "roots"}}, "nodes": {"font": {"size": 64, "face": "Arial", "color": "#222", "background": "#fff", "strokeWidth": 3, "strokeColor": "#333", "multi": true}, "borderWidth": 12, "borderWidthSelected": 24, "shadow": true, "shape": "box", "widthConstraint": {"minimum": 400, "maximum": 800}, "heightConstraint": {"minimum": 120, "maximum": 400}}, "edges": {"arrows": {"to": {"enabled": true, "scaleFactor": 1.7}}, "smooth": false, "color": {"inherit": false}, "width": 5, "selectionWidth": 22}, "interaction": {"navigationButtons": true, "keyboard": true, "zoomView": true, "dragView": true, "hover": true, "multiselect": true, "tooltipDelay": 120}, "physics": {"enabled": false}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <script type="text/javascript">
+    function getNodeDegrees(network, nodeId, maxDepth=3) {
+        // BFS to get nodes by degree from nodeId
+        var degrees = {};
+        degrees[nodeId] = 0;
+        var visited = {};
+        visited[nodeId] = true;
+        var queue = [{id: nodeId, depth: 0}];
+        while (queue.length > 0) {
+            var current = queue.shift();
+            if (current.depth >= maxDepth) continue;
+            var neighbors = network.getConnectedNodes(current.id);
+            for (var i=0; i<neighbors.length; i++) {
+                var n = neighbors[i];
+                if (!visited[n]) {
+                    degrees[n] = current.depth + 1;
+                    visited[n] = true;
+                    queue.push({id: n, depth: current.depth + 1});
+                }
+            }
+        }
+        return degrees;
+    }
+
+    function blurByDegree(network, nodeId) {
+        var allNodes = network.body.data.nodes.get();
+        var degrees = getNodeDegrees(network, nodeId, 3);
+        var updateNodes = [];
+        for (var i=0; i<allNodes.length; i++) {
+            var n = allNodes[i];
+            var deg = degrees.hasOwnProperty(n.id) ? degrees[n.id] : null;
+            var opacity = 1.0;
+            if (deg === null) {
+                opacity = 0.15;
+            } else if (deg === 1) {
+                opacity = 0.45;
+            } else if (deg === 2) {
+                opacity = 0.25;
+            } else if (deg === 3) {
+                opacity = 0.15;
+            }
+            // The selected node stays at full opacity
+            if (n.id == nodeId) opacity = 1.0;
+            updateNodes.push({
+                id: n.id,
+                color: {
+                    ...n.color,
+                    opacity: opacity
+                },
+                font: {
+                    ...n.font,
+                    color: "rgba(34,34,34," + opacity + ")"
+                }
+            });
+        }
+        network.body.data.nodes.update(updateNodes);
+
+        // Make connected edges much more bold
+        var allEdges = network.body.data.edges.get();
+        var updateEdges = [];
+        for (var i=0; i<allEdges.length; i++) {
+            var e = allEdges[i];
+            // If the edge is connected to the selected node, make it very bold
+            if (e.from == nodeId || e.to == nodeId) {
+                updateEdges.push({
+                    id: e.id,
+                    width: 22
+                });
+            } else {
+                updateEdges.push({
+                    id: e.id,
+                    width: 5
+                });
+            }
+        }
+        network.body.data.edges.update(updateEdges);
+    }
+
+    function resetBlur(network) {
+        var allNodes = network.body.data.nodes.get();
+        var updateNodes = [];
+        for (var i=0; i<allNodes.length; i++) {
+            var n = allNodes[i];
+            updateNodes.push({
+                id: n.id,
+                color: {
+                    ...n.color,
+                    opacity: 1.0
+                },
+                font: {
+                    ...n.font,
+                    color: "#222"
+                }
+            });
+        }
+        network.body.data.nodes.update(updateNodes);
+
+        // Reset all edge widths to normal
+        var allEdges = network.body.data.edges.get();
+        var updateEdges = [];
+        for (var i=0; i<allEdges.length; i++) {
+            var e = allEdges[i];
+            updateEdges.push({
+                id: e.id,
+                width: 5
+            });
+        }
+        network.body.data.edges.update(updateEdges);
+    }
+
+    // Wait for vis network to be ready
+    window.addEventListener("load", function() {
+        // pyvis always uses 'network' as the variable name
+        if (typeof network !== "undefined") {
+            network.on("click", function(params) {
+                if (params.nodes.length > 0) {
+                    blurByDegree(network, params.nodes[0]);
+                } else {
+                    resetBlur(network);
+                }
+            });
+            network.on("deselectNode", function(params) {
+                resetBlur(network);
+            });
+        }
+    });
+    </script>
+    
+</body>
+</html>
