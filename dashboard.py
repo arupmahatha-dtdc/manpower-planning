@@ -154,9 +154,9 @@ def main() -> None:
     default_dox = float(baseline_row.get('per_day_dox', 0) or 0)
     cols_in = st.columns(2)
     with cols_in[0]:
-        input_per_day_ndx = st.number_input('Per Day NDX', value=default_ndx, format='%f')
+        input_per_day_ndx = st.number_input('Per Day NDX', value=default_ndx, step=100, format='%f')
     with cols_in[1]:
-        input_per_day_dox = st.number_input('Per Day DOX', value=default_dox, format='%f')
+        input_per_day_dox = st.number_input('Per Day DOX', value=default_dox, step=100,format='%f')
 
     st.markdown('---')
     st.subheader('Shift-wise Outputs')
