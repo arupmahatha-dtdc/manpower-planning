@@ -123,7 +123,7 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    data_path = '/Users/arup/Documents/manpower-planning/hub_manpower_modelling.csv'
+    data_path = 'hub_manpower_modelling.csv'
     df = load_data(data_path)
 
     # Selection: only Hub Code
